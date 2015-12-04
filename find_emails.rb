@@ -4,7 +4,7 @@ require 'spidr'
 require 'byebug'
 
 class DomainReader
-  attr_reader :uri, :emails, :url_map
+  attr_reader :uri, :emails
 
   def initialize(domain_name)
     self.uri = domain_name
@@ -30,7 +30,9 @@ class DomainReader
     if emails.size == 0
       puts "Found no emails"
     else
+      puts "\nFound these email addresses:"
       emails.each { |email| puts email }
+      puts "..."
     end
     nil
   end
@@ -60,7 +62,7 @@ class DomainReader
     Spidr.site(uri) do |spider|
       spider.every_page do |page|
         spider.pause! if page_limit && page_limit <= num_checked_pages
-        
+
         num_checked_pages += 1
         puts "Checked #{num_checked_pages} pages" if num_checked_pages % 5 == 0
         # because only printing emails at the end, status updates are nice
@@ -84,6 +86,4 @@ puts "Searching..."
 
 reader.find_emails(limit)
 
-puts "\nFound these email addresses:"
 reader.print_email_addresses
-puts "..."
