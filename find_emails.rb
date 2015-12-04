@@ -59,6 +59,8 @@ class DomainReader
   def every_page(lambda, page_limit = nil)
     num_checked_pages = 0
 
+    puts "Searching..."
+
     Spidr.site(uri) do |spider|
       spider.every_page do |page|
         spider.pause! if page_limit && page_limit <= num_checked_pages
@@ -81,8 +83,6 @@ puts "Would you like to limit the number of pages searched? ('no' or the number)
 limit = STDIN.gets.chomp
 limit = limit.match(/\A\d+\z/) ? limit.to_i : nil
 # if there is a page limit, converts it to integer
-
-puts "Searching..."
 
 reader.find_emails(limit)
 
