@@ -17,3 +17,5 @@
 > Many apps do not adhere to typical crawling standards instead relying on listeners and internal callbacks or hooks for navigation, like Backbone using history.navigate and Angular's location path. Luckily for them, Google's crawler is more advanced than the typical library.
 
 > However, most crawling libraries, including Spidr, won't be able to scrape those that don't use hrefs for navigation.
+
+> I also assume that all requested domains are http. If they are more secured, they are often unfriendly to crawlers anyway.
