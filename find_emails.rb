@@ -1,13 +1,14 @@
 require 'set'
 require 'nokogiri'
 require 'spidr'
-require 'byebug'
+require 'uri'
 
 class DomainReader
-  attr_reader :uri, :emails
+  attr_accessor :uri
+  attr_reader :emails
 
-  def initialize(domain_name)
-    self.uri = domain_name
+  def initialize(uri)
+    self.uri = uri
   end
 
   def find_emails(page_limit = nil)
@@ -39,21 +40,6 @@ class DomainReader
 
   private
 
-  # upon setting the name, validates it and adds the protocol and sub-domain
-  def uri=(name)
-    name = validate_domain(name)
-    @uri = "http://www.#{name}"
-  end
-
-  # makes sure it is not nil and generally looks like a domain name
-  def validate_domain(name)
-    until !name.nil? && name.match(/\w+\.\w+/)
-      puts "Please enter valid domain"
-      name = STDIN.gets.chomp
-    end
-    name
-  end
-
  # built on top of Spidr's #every_page hook,
  # adding an optional page limit and placing the callback in context
   def every_page(lambda, page_limit = nil)
@@ -76,8 +62,18 @@ class DomainReader
   end
 end
 
+# makes sure it is not nil and generally looks like a domain name
+def input_and_validate(name)
+  until !name.nil? && name.match(/\w+\.\w+/)
+    puts "Please enter valid domain"
+    name = STDIN.gets.chomp
+  end
+  "http://#{name}"
+end
 
-reader = DomainReader.new(ARGV[0])
+name = input_and_validate(ARGV[0])
+
+reader = DomainReader.new(name)
 
 puts "Would you like to limit the number of pages searched? ('no' or the number)"
 limit = STDIN.gets.chomp

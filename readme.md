@@ -8,7 +8,7 @@
 
 > Make sure you have the spidr crawler. If you're not sure, run `gem install spidr`
 
-> Then run `ruby find_emails.rb`, giving it a domain, like `nytimes.com`, as an argument.
+> Then run `ruby find_emails.rb`, giving it a domain, like `www.nytimes.com`, as an argument.
 
 > When it prompts you for a page limit, either give it a number or, if you don't want a limit, just press enter.
 
