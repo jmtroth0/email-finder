@@ -5,15 +5,12 @@ require 'uri'
 
 class DomainReader
   attr_accessor :uri
-  attr_reader :emails
 
   def initialize(uri)
     self.uri = uri
   end
 
   def find_emails(page_limit = nil)
-    @emails = Set.new # use a set to ensure unique emails efficiently
-
     search = lambda do |page|
                page.search('//a[@href]').each do |link| # gets all a's with hrefs
                  link_email = link['href'].match(/\w+@\w+\.\w+/)
@@ -40,6 +37,10 @@ class DomainReader
 
   private
 
+  def emails # getter method ensures existence as well
+    @emails ||= Set.new # use a set to ensure unique emails efficiently
+  end
+
  # built on top of Spidr's #every_page hook,
  # adding an optional page limit and placing the callback in context
   def every_page(lambda, page_limit = nil)
@@ -64,11 +65,13 @@ end
 
 # makes sure it is not nil and generally looks like a domain name
 def input_and_validate(name)
-  until !name.nil? && name.match(/\w+\.\w+/)
+  uri = URI.parse("http://#{name}")
+  until !name.nil? && uri.kind_of?(URI::HTTP)
     puts "Please enter valid domain"
     name = STDIN.gets.chomp
+    uri = URI.parse("http://#{name}")
   end
-  "http://#{name}"
+  uri
 end
 
 name = input_and_validate(ARGV[0])
